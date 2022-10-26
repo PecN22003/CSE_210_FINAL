@@ -21,13 +21,11 @@ class RaylibVideoService:
         pyray.begin_drawing()
         pyray.clear_background(raylib_color)
 
-    def draw_image(self, image, position):
+    def draw_image(self, image, x, y):
         filepath = image.get_filename()
         # fixed os dependent filepath
         filepath = str(pathlib.Path(filepath))
         texture = self._textures[filepath]
-        x = position.get_x()
-        y = position.get_y()
         raylib_position = pyray.Vector2(x, y)
         scale = image.get_scale()
         rotation = image.get_rotation()
@@ -41,31 +39,6 @@ class RaylibVideoService:
             pyray.draw_rectangle(x, y, width, height, raylib_color)
         else:
             pyray.draw_rectangle_lines(x, y, width, height, raylib_color)
-
-    def draw_text(self, text, position):
-        filepath = text.get_fontfile()
-        # fixed os dependent filepath
-        filepath = str(pathlib.Path(filepath))
-        value = text.get_value()
-        size = text.get_size()
-        spacing = 0
-        alignment = text.get_alignment()
-        tint = self._to_raylib_color(Color(255, 255, 255))
-
-        font = self._fonts[filepath]
-        text_image = pyray.image_text_ex(font, value, size, spacing, tint)
-        
-        x = position.get_x()
-        y = position.get_y()
-
-        if alignment == ALIGN_CENTER:
-            x = (position.get_x() - text_image.width / 2) 
-            # y = (position.get_y() - text_image.height / 2)
-        elif alignment == ALIGN_RIGHT:
-            x = (position.get_x() - text_image.width) 
-
-        raylib_position = pyray.Vector2(x, y)
-        pyray.draw_text_ex(font, value, raylib_position, size, spacing, tint)
         
     def flush_buffer(self):
         pyray.end_drawing()

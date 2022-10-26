@@ -1,3 +1,4 @@
+from threading import Thread
 from game.memory.board import Board
 from constants.rules import RULES
 from constants.values import *
@@ -24,7 +25,7 @@ class Director:
         t = 0
         while self._video_service.is_window_open():
             self._get_inputs()
-            if t == GRANUALITY:
+            if t >= GRANUALITY:
                 self._do_updates()
                 t = 0
             t += 1
@@ -36,7 +37,7 @@ class Director:
     def _get_inputs(self):
         if self._keyboard_service.is_key_pressed("p"):
             self._paused = not self._paused
-        if self._mouse_service.is_button_pressed("left"):
+        if self._mouse_service.is_button_down("left"):
             self._change_cell_state(*self._mouse_service.get_coordinates())
 
     def _do_updates(self):
@@ -62,7 +63,7 @@ class Director:
                 break
             elif i == self._board[y][x].symbol:
                 flag = True
-        else:
+        else: # no break
             for i in RULES.states:
                 self._board[y][x].symbol = i
                 break
